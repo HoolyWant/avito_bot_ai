@@ -15,6 +15,9 @@ class AvitoAPI:
                 'Content_type': 'application/x-www-form-urlencoded'}
         }
 
+    def __str__(self):
+        return f'client - {self.client_id}'
+
     async def get_auth_token(self) -> dict:
         """
         Получение headers с access токеном
@@ -50,7 +53,12 @@ class AvitoAPI:
                 self_info = json.loads(data)
                 return self_info
 
-    async def get_history(self):
+    async def get_history(self) -> list:
+        """
+         История чатов пользователя
+
+        :return: messages_history
+        """
         async with aiohttp.ClientSession() as session:
             auth_token = await self.get_auth_token()
             self_info = await self.get_self_info()
@@ -59,17 +67,23 @@ class AvitoAPI:
                                    headers=auth_token
                                    ) as response:
                 data = await response.text()
-                messages_history = json.loads(data)
-                return messages_history['chats']
+                messages_history = json.loads(data)['chats']
+                return messages_history
 
-    async def send_message(self, text):
+    async def send_message(self, text: str) -> dict:
+        """
+        Отправка сообщений на основе входящего текста по айди на тестовыы диалог
+
+        :param text: текст сообщения
+        :return: success: информация об отправленном сообщении
+        """
         async with aiohttp.ClientSession() as session:
             auth_token = await self.get_auth_token()
             self_info = await self.get_self_info()
             user_id = self_info['id']
             # messages_history = await self.get_history()
             chat_id = 'u2i-kYQbFs2IueV9uqRYbnnqAw'
-            data = {
+            message = {
                     "message": {
                         "text": text
                     },
@@ -78,9 +92,10 @@ class AvitoAPI:
 
             async with session.post(url=f'https://api.avito.ru/messenger/v1/accounts/'
                                         f'{user_id}/chats/{chat_id}/messages',
-                                    json=data,
+                                    json=message,
                                     headers=auth_token
                                     ) as response:
                 data = await response.text()
-                print(data, 'TOTOTOT')
+                success = json.loads(data)
+                return success
 
