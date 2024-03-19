@@ -3,7 +3,7 @@ import json
 
 import aiohttp
 
-from src.settings import KEYS
+from src.settings import KEYS, HEADERS
 
 
 async def get_history(keys):
@@ -16,12 +16,13 @@ async def get_history(keys):
             print(html)
 
 
-async def get_auth_token(keys):
+async def get_auth_token(keys, headers):
     async with aiohttp.ClientSession() as session:
-        json_keys = json.dumps(keys)
-        async with session.post(url=f'https://api.avito.ru/token',
-                                data=json_keys) as response:
-            html = await response.text()
-            print(html)
+        async with session.post(url=f'https://api.avito.ru/token/',
+                                data=keys,
+                                headers=headers) as response:
+            data = await response.text()
+            auth_token = json.loads(data)['access_token']
+            return auth_token
 
-asyncio.run(get_auth_token(KEYS))
+asyncio.run(get_auth_token(KEYS, HEADERS))

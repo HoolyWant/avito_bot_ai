@@ -12,11 +12,10 @@ CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 
 KEYS = {
     'client_id': CLIENT_ID,
-    'client_secret': CLIENT_SECRET
+    'client_secret': CLIENT_SECRET,
+    'grant_type': 'client_credentials'
 }
 
-
-
-# HEADERS = {
-#     'Authorization': 'Bearer ' + CLIENT_SECRET
-# }
+HEADERS = {
+    'Content_type': 'application/x-www-form-urlencoded'
+}
