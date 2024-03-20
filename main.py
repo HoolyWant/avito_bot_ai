@@ -20,11 +20,8 @@ async def main():
 
     avito_api = AvitoAPI(client_id, client_secret)
     auth_token = await avito_api.get_auth_token()
-    pprint(auth_token)
     self_info = await avito_api.get_self_info()
-    pprint(self_info['id'])
-    text = 'Test AvitoAPI'
-    await avito_api.send_message(text)
+    await avito_api.last_message_get()
 
 
 if __name__ == "__main__":
